@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Todo {
+  todo_id Int @id @default(autoincrement())
+  description String @db.Text
+  is_completed Boolean @default(false)
+}
+
+// model user {
+//   user_id Int @id @default(autoincrement())
+//   first_name String @db.VarChar(50) 
+//   last_name String @db.VarChar(50)
+//   email String @db.VarChar(255) @unique
+//   password String @db.VarChar(255)
+//   // User 1 to many relation with todo, 1 user may have 0 or many todos
+//   todos todo[]
+// }
+
+// model todo {
+//   todo_id Int @id @default(autoincrement())
+//   // Define relation between user and todo
+//   author user @relation(fields: [user_id], references: [user_id])
+//   user_id Int
+//   title String @db.VarChar(50)
+//   description String @db.Text
+//   is_completed Boolean @default(false)
+// }
