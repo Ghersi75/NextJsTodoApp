@@ -4,7 +4,7 @@ export async function PATCH(request: Request, { params }: { params : { todo_id: 
   try {
     const data = await request.json()
     const todo_id = params.todo_id
-    console.log(data, todo_id)
+    // console.log(data, todo_id)
     if (data.is_completed !== undefined) {
       const res = await db.updateTable("todo")
         .set({
@@ -12,7 +12,7 @@ export async function PATCH(request: Request, { params }: { params : { todo_id: 
         })
         .where("todo_id", "=", todo_id)
         .execute()
-        console.log(res)
+        // console.log(res)
     }
 
     if (data.description) {
@@ -22,7 +22,7 @@ export async function PATCH(request: Request, { params }: { params : { todo_id: 
         })
         .where("todo_id", "=", todo_id)
         .execute()
-        console.log(res)
+        // console.log(res)
       }
     
     // console.log(params.todo_id)
