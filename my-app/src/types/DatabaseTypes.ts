@@ -3,9 +3,20 @@
 import { Generated, Insertable, Selectable, Updateable } from 'kysely'
 
 export interface Database {
-  todo: TodoTable
+  todo: TodoTable,
+  user: UserTable
 }
 
+export interface UserTable {
+  user_id: Generated<number>
+  username: string
+  email: string
+  password: string
+}
+
+export type User = Selectable<UserTable>
+export type NewUser = Insertable<UserTable>
+export type UpdateUser = Updateable<UserTable>
 export interface TodoTable {
   todo_id: Generated<number>
   is_completed: boolean
