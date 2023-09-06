@@ -2,8 +2,8 @@
 
 import { darkModeAtom } from "@/utils/atoms"
 import { useAtom } from 'jotai'
-import AddTask from '@/components/AddTask';
-import TodoList from "@/components/TodoList"
+import AddTask from '@/app/_components/AddTask';
+import TodoList from "@/app/_components/TodoList"
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 import type { Session } from "next-auth"
