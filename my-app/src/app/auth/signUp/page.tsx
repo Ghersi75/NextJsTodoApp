@@ -10,15 +10,30 @@ export default function SignIn() {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const res = await fetch("/api/users/create", {
-      method: "POST",
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        email: email
+    try {
+      const res = await fetch("/api/users/create", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username,
+          password: password,
+          email: email
+        })
       })
-    })
-    console.log(res)
+
+      if (res.ok) {
+        signIn("credentials", {
+          username: username,
+          password: password,
+          callbackUrl: "http://localhost:3000"
+        })
+      }
+
+    }
+    catch (e) {
+      console.log("Error: ", e)
+    }
+    
+
     // signIn("credentials", { username: username, password: password, callbackUrl: "http://localhost:3000" })
   }
 
