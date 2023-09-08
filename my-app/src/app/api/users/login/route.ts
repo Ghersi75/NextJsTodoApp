@@ -23,11 +23,13 @@ export async function POST(req: Request) {
       })
     }
 
+    console.log(email, username, password)
+
     let res
 
     // Login with email and password
-    if (email && password) {
-      res = await db.selectFrom("user").select("user.email").select("user.username").select("user.password").where("email", "=", email).executeTakeFirst()
+    if (email !== undefined && password !== undefined) {
+      res = await db.selectFrom("user").select("user.user_id").select("user.email").select("user.username").select("user.password").where("email", "=", email).executeTakeFirst()
       if (res === undefined) {
         return new Response(`User with email ${email} not found.`, {
           status: 400
@@ -36,8 +38,8 @@ export async function POST(req: Request) {
     }
 
     // Login with username and password
-    if (username && password) {
-      res = await db.selectFrom("user").select("user.email").select("user.username").select("user.password").where("username", "=", username).executeTakeFirst()
+    if (username !== undefined && password !== undefined) {
+      res = await db.selectFrom("user").select("user.user_id").select("user.email").select("user.username").select("user.password").where("username", "=", username).executeTakeFirst()
       if (res === undefined) {
         return new Response(`User with username ${username} not found.`, {
           status: 400
@@ -47,12 +49,16 @@ export async function POST(req: Request) {
 
     const passwordMatch = res?.password ? await validatePassword(password, res.password) : false
 
+    // console.log(passwordMatch)
+
     if (!passwordMatch) {
       return new Response("Password input is not correct", {
         status: 400
       })
     } else {
+      // console.log("Here")
       return new Response(JSON.stringify({
+        user_id: res?.user_id,
         username: res?.username,
         email: res?.email
         // any other useful fields, such as profile picture link
