@@ -1,10 +1,10 @@
-import { hash, genSalt } from "bcrypt"
+import { hash, compare } from "bcrypt"
 
-export const generateSalt = async (saltRounds: number): Promise<string> => {
-  return await genSalt(saltRounds)
+export const hashPassword = async (password: string, saltRounds: number): Promise<string> => {
+  // password + salt first, and then pepper
+  return await hash(password, saltRounds)
 }
 
-export const hashPassword = async (salt: string, password: string): Promise<string> => {
-  // password + salt first, and then pepper
-  return await hash(password, salt)
+export const validatePassword = async (plainTextPassword: string, hashedPassword: string): Promise<boolean> => {
+  return await compare(plainTextPassword, hashedPassword)
 }
