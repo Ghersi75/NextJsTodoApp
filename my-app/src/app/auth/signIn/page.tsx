@@ -35,6 +35,7 @@ export default function SignIn() {
         <input type="password" placeholder="Password" className="p-2.5 rounded-lg" onChange={(e) => {setPassword(e.target.value)}}/>
         <button className="bg-slate-600 hover:bg-slate-500 p-4 mt-2 rounded-lg font-bold text-slate-100" onClick={onClick}>Sign In</button>
         <span>Don't have an account? <a className="cursor-pointer" onClick={() => {router.push("/auth/signUp")}}>Sign Up</a></span>
+        <button onClick={(e) => {e.preventDefault(); signIn("google")}}>Sing in with google</button>
       </form>
     </div>
   )
