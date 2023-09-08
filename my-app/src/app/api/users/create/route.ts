@@ -1,5 +1,5 @@
 import { db } from "@/utils/database"
-import { generateSalt, hashPassword } from "@/utils/passwordHashing"
+import { hashPassword } from "@/utils/passwordHashing"
 
 export async function POST(req: Request) {
   const { username, email, password } = await req.json()
@@ -19,26 +19,28 @@ export async function POST(req: Request) {
 
     // console.log("Here")
 
-    const salt = await generateSalt(12)
+    const saltRounds = 12
 
-    console.log("Salt", salt)
+    console.log("Salt", saltRounds)
 
-    let hashedPass = await hashPassword(salt, password)
-    const ne = `${salt}$${await hashedPass}`
+    let hashedPass = await hashPassword(password, saltRounds)
+    console.log(hashedPass)
 
-    console.log("Pass: ", ne)
-    // const res = await db.insertInto("user").values({
-    //   username: username,
-    //   email: email,
-    //   password: hashedPass
-    // }).executeTakeFirstOrThrow()
+    const res = await db.insertInto("user").values({
+      username: username,
+      email: email,
+      password: hashedPass
+    }).executeTakeFirstOrThrow()
 
-    // console.log(res)
+    console.log(res)
     return new Response("Success", {
       status: 200
     })
   }
   catch (e) {
     console.log("Error: ", e)
+    return new Response("Error", {
+      status: 400
+    })
   }
 }
