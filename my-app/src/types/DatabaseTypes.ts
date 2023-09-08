@@ -19,6 +19,7 @@ export type NewUser = Insertable<UserTable>
 export type UpdateUser = Updateable<UserTable>
 export interface TodoTable {
   todo_id: Generated<number>
+  user_id: number
   is_completed: boolean
   description: string
 }
