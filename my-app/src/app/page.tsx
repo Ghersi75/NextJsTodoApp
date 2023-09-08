@@ -21,7 +21,7 @@ export default function Home() {
     // }
   // }
   )
-  console.log(session)
+  // console.log(session)
   const [darkMode, setDarkMode] = useAtom(darkModeAtom)
   // const [session, setSession] = useState<Session | null>()
   
