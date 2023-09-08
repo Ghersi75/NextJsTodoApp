@@ -4,11 +4,19 @@ import { AiOutlinePlus, AiFillCloseCircle } from "react-icons/ai"
 import { useState, MouseEvent } from "react"
 import { useAtom } from "jotai"
 import { todoItemsAtom } from "@/utils/atoms"
+import { useSession } from "next-auth/react"
+import { redirect } from "next/navigation"
 
 export default function AddTask() {
   const [modalOpen, setModalOpen] = useState(false)
   const [newTodo, setNewTodo] = useState("")
   const [todos, setTodos] = useAtom(todoItemsAtom)
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect("/auth/signin")
+    }
+  })
 
   const handleBackgroundOnClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
     if (e.currentTarget.id === "container" && e.target === e.currentTarget) {
@@ -17,6 +25,10 @@ export default function AddTask() {
   }
 
   const handleSubmit = async () => {
+    if (status !== "authenticated") {
+      return
+    }
+    
     try {
       const res = await fetch(`/api/todos`, {
         method: "POST",
@@ -24,7 +36,10 @@ export default function AddTask() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          description: newTodo
+          user: session?.user,
+          todo: {
+            description: newTodo
+          }
         })
       })
 
