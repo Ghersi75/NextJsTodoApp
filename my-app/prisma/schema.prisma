@@ -15,10 +15,13 @@ model User {
   username String @db.VarChar(50) @unique
   password String @db.VarChar(255)
   email String @db.VarChar(255) @unique
+  todos Todo[]
 }
 
 model Todo {
   todo_id Int @id @default(autoincrement())
+  author  User @relation(fields: [user_id], references: [user_id])
+  user_id Int 
   description String @db.Text
   is_completed Boolean @default(false)
 }
