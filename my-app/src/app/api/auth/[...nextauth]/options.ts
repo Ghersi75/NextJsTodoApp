@@ -13,8 +13,9 @@ export const options: NextAuthOptions = {
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
+        email: { type: "text" },
         username: { label: "Username", type: "text", placeholder: "Username" },
-        password: { label: "Password", type: "password", placeholder: "Password" }
+        password: { label: "Password", type: "password", placeholder: "Password" },
       },
       async authorize(credentials, req) {
         // You need to provide your own logic here that takes the credentials
@@ -25,20 +26,40 @@ export const options: NextAuthOptions = {
         // (i.e., the request IP address)
 
         // Fix this later
-        const user = { id: "42", name: "test", password: "test"}
+        // const user = { id: "42", name: "test", password: "test"}
 
-        if (credentials?.username === user.name && credentials?.password === user.password) {
-          return user
+        if ((credentials?.username || credentials?.email) && credentials?.password) {
+          try {
+            const res = await fetch("http://localhost:3000/api/users/login", {
+              method: 'POST',
+              body: JSON.stringify({
+                email: credentials?.email,
+                username: credentials?.username,
+                password: credentials?.password
+              }),
+              headers: { "Content-Type": "application/json" }
+            })
+
+            // console.log(res)
+  
+            const user = await res.json()
+
+            console.log(user)
+
+            return {
+              id: user.user_id,
+              name: user.username,
+              email: user.email
+            }
+          }
+          catch (e) {
+            console.log("Error logging in with next-auth credentials: ", e)
+            return null
+          }
         }
 
         return null
-        ////
-        // const res = await fetch("/your/endpoint", {
-        //   method: 'POST',
-        //   body: JSON.stringify(credentials),
-        //   headers: { "Content-Type": "application/json" }
-        // })
-        // const user = await res.json()
+
   
         // // If no error and we have user data, return it
         // if (res.ok && user) {
