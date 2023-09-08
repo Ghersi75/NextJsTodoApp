@@ -72,7 +72,22 @@ export const options: NextAuthOptions = {
     }),
     GoogleProvider({
       clientId: (process.env.GOOGLE_ID as string),
-      clientSecret: (process.env.GOOGLE_SECRET as string)
+      clientSecret: (process.env.GOOGLE_SECRET as string),
+      profile(profile, tokens) {
+        const username = profile.name
+        const email = profile.email
+        // Add a field for provider or login location in the database
+        const password = "google"
+
+        
+
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
     }),
     GithubProvider({
       clientId: (process.env.GITHUB_ID as string),
