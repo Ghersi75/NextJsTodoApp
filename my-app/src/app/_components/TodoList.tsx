@@ -5,6 +5,8 @@ import { BsPencilSquare, BsTrash } from "react-icons/bs"
 import { AiFillCloseCircle } from "react-icons/ai"
 import { useAtom } from "jotai"
 import { todoItemsAtom } from "@/utils/atoms"
+import { useSession } from "next-auth/react"
+import { redirect } from "next/navigation"
 
 export default function TodoList() {
   const [loading, setLoading] = useState(true)
@@ -12,13 +14,29 @@ export default function TodoList() {
   const [newDescription, setNewDescription] = useState("")
   const [modifyingTodoId, setModifyingTodoId] = useState<number>()
   const [todos, setTodos] = useAtom(todoItemsAtom)
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated: () => {
+      redirect("/auth/signIn")
+    }
+  })
 
   const fetchData = async () => {
     try {
-      const res = await fetch("/api/todos")
+      // Wait for user data to be loaded before doing anything
+      let params
+      if (session?.user?.user_id) {
+        params = `user_id=${session.user.user_id}`
+      } else if (session?.user?.name) {
+        params = `username=${session.user.name}`
+      }
+      console.log(`/api/todos?${params}`)
+      const res = await fetch(`/api/todos?${params}`, {
+        method: "GET"
+      })
       const todoData = await res.json()
       // console.log(todoData)
-      setTodos(todoData)
+      setTodos(todoData?.todos)
       setLoading(false)
     } catch(e) {
       console.log(e)
@@ -26,8 +44,10 @@ export default function TodoList() {
   }
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (status === "authenticated") {
+      fetchData()
+    }
+  }, [status])
 
   const handleCheckBox = async (e: ChangeEvent<HTMLElement>, id: number) => {
     let currVal
@@ -155,7 +175,7 @@ export default function TodoList() {
     }
     {loading ? 
       <div>Loading ...</div> :
-      todos.length > 0 &&
+      todos?.length > 0 &&
       <table className="text-left rounded-lg ">
         <thead>
           <tr>
