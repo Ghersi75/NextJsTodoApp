@@ -7,10 +7,20 @@ export default function SignIn() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    signIn("credentials", { username: username, password: password, callbackUrl: "http://localhost:3000" })
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault()
+  //   const res = await signIn("credentials", { username: "user", password: password })
+  //   console.log(res)
+  //   // console.log("Signed in")
   }
+
+  const onClick = async (e: any) => {
+      e.preventDefault()
+      const res = await signIn("credentials", { username: "user", password: password, redirect: false })
+      console.log(res)
+  }
+
+
 
   return(
     <div className="flex h-screen w-screen items-center justify-center bg-slate-200">
@@ -19,7 +29,7 @@ export default function SignIn() {
         <input type="text" placeholder="Username" className="p-2.5 rounded-lg" onChange={(e) => {setUsername(e.target.value)}}/>
         <label className="ml-2.5">Password: </label>
         <input type="password" placeholder="Password" className="p-2.5 rounded-lg" onChange={(e) => {setPassword(e.target.value)}}/>
-        <button className="bg-slate-600 hover:bg-slate-500 p-4 mt-2 rounded-lg font-bold text-slate-100">Sign In</button>
+        <button className="bg-slate-600 hover:bg-slate-500 p-4 mt-2 rounded-lg font-bold text-slate-100" onClick={onClick}>Sign In</button>
       </form>
     </div>
   )
